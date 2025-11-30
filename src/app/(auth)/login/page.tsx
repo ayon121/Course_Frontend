@@ -11,9 +11,6 @@ export default function LoginPage() {
     const handleLogin = async (formData: FormData) => {
         setLoading(true);
 
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-
         const result = await loginUser(null,formData);
 
         // If loginUser triggers redirect, this won't run.

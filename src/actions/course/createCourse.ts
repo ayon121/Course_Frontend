@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server"
-import { da } from "zod/locales";
+
 import { getCookie } from "../auth/tokenHandlers";
 import { redirect } from "next/navigation";
 
@@ -47,9 +47,12 @@ export const createCourse = async (payload: CreateCoursePayload) => {
             throw new Error(data.message || "Failed to create course");
         }
         redirect("/0213A/admin/allcourse?courseCreated=true");
-    } catch (error: any) {
-        if (error?.digest?.startsWith("NEXT_REDIRECT")) throw error;
 
+    } catch (error: any) {
+        // Allow NEXT_REDIRECT to escape
+        if (error?.digest?.startsWith("NEXT_REDIRECT")) {
+            throw error;
+        }
         return {
             success: false,
             message:

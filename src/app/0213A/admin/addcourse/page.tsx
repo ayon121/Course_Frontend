@@ -3,6 +3,7 @@
 
 import { createCourse } from "@/actions/course/createCourse";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Module {
     title: string;
@@ -65,15 +66,13 @@ export default function AddCoursePage() {
             isPublished,
         };
 
-        console.log("Submitted Course Data:", formData);
+    
 
-        try {
-            const result = await createCourse(formData);
-            console.log("Course created:", result);
+        const result = await createCourse(formData);
+        toast.info("Course creation in progress...");
+        toast.info(result.message || "Course created successfully");
 
-        } catch (err: any) {
-            console.error("Error creating course:", err.message);
-        }
+
     };
 
     return (
