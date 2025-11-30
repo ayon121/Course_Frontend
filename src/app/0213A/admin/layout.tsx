@@ -14,23 +14,40 @@ import {
   Home,
   LogOut,
 } from "lucide-react";
-import { log } from "console";
+
 import { logoutUser } from "@/actions/auth/logoutUser";
+import { UserInfo } from "@/actions/auth/user.interface";
+import { getUserInfoServer } from "@/actions/auth/getUserInfo";
+
 
 
 export default function AdminLayout({ children }: any) {
   const [open, setOpen] = useState(true); // desktop sidebar toggle
   const [mobileOpen, setMobileOpen] = useState(false); // mobile sidebar
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<UserInfo>();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userInfo = await getUserInfoServer(); // call server function
+      setUser(userInfo);
+    };
+
+    fetchUser();
+  }, []);
+
+
+
   const handleLogout = async () => {
-   console.log("logout");
-   logoutUser();
+    console.log("logout");
+    logoutUser();
   };
 
   const navItems = [
@@ -69,16 +86,14 @@ export default function AdminLayout({ children }: any) {
       {/* MOBILE SIDEBAR (SLIDE-IN FROM LEFT) */}
       {/* --------------------------------------- */}
       <div
-        className={`lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity ${
-          mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity ${mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={() => setMobileOpen(false)}
       />
 
       <aside
-        className={`lg:hidden fixed top-0 left-0 h-full bg-white w-64 shadow-xl z-60 p-5 border-r border-gray-200 transition-transform duration-300 ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`lg:hidden fixed top-0 left-0 h-full bg-white w-64 shadow-xl z-60 p-5 border-r border-gray-200 transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-bold tracking-widest font-mono">Admin Panel</h1>
@@ -116,6 +131,7 @@ export default function AdminLayout({ children }: any) {
         >
           <LogOut size={18} /> Logout
         </button>
+
       </aside>
 
       {/* ------------------------------ */}
@@ -141,9 +157,12 @@ export default function AdminLayout({ children }: any) {
 
           {/* Title */}
           {open && (
-            <h1 className="text-2xl font-bold mb-6 font-mono tracking-widest">
-              Admin Panel
-            </h1>
+            <div className="mb-7">
+              <h1 className="text-2xl font-bold font-mono tracking-widest">
+                Admin Panel
+              </h1>
+              <span className="text-xs tracking-widest font-mono">Welcome, {user?.name || ""}</span>
+            </div>
           )}
 
           {/* Menu */}
@@ -161,7 +180,7 @@ export default function AdminLayout({ children }: any) {
                   shadow-sm hover:shadow-md
                 "
                 >
-                  <Icon className="w-5 h-5 text-blue-500 group-hover:scale-110 transition" />
+                  <Icon className="w-5 h-5 text-gray-800 group-hover:scale-110 transition" />
                   {open && <span>{item.title}</span>}
                 </Link>
               );

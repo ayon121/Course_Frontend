@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { createCourse } from "@/actions/course/createCourse";
 import { useState } from "react";
 
 interface Module {
@@ -41,7 +42,7 @@ export default function AddCoursePage() {
         ]);
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
 
         // Construct payload exactly for backend
@@ -66,8 +67,13 @@ export default function AddCoursePage() {
 
         console.log("Submitted Course Data:", formData);
 
-        // Here you can call your API
-        // axios.post("/api/courses", formData)
+        try {
+            const result = await createCourse(formData);
+            console.log("Course created:", result);
+
+        } catch (err: any) {
+            console.error("Error creating course:", err.message);
+        }
     };
 
     return (
