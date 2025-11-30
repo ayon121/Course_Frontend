@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+@theme {
+  --color-main: #052b47;
+  --color-border: #038baf;
+  --color-sub_color: #a1d99a; 
+  --color-whitecolor: #FFFFFF; 
+  --color-lightgreen: #D7EFB5; 
+  --color-darkgreen: #005b32; 
+  --color-sub_color: #33679b; 
+  --color-highlight_color: #FD5873; 
+  --color-black: #1B1212; 
+  --font-poppins : "Poppins", sans-serif ;
+  --font-babas : "Bebas Neue", sans-serif ;
+}
