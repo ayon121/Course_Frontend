@@ -12,17 +12,26 @@ import {
   Users,
   ImageIcon,
   Home,
+  LogOut,
 } from "lucide-react";
+import { log } from "console";
+import { logoutUser } from "@/actions/auth/logoutUser";
+
 
 export default function AdminLayout({ children }: any) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(true); // desktop sidebar toggle
+  const [mobileOpen, setMobileOpen] = useState(false); // mobile sidebar
   const [mounted, setMounted] = useState(false);
 
-  // Ensure this component only renders after mount to avoid hydration mismatch
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
+
+  const handleLogout = async () => {
+   console.log("logout");
+   logoutUser();
+  };
 
   const navItems = [
     { title: "Add Course", href: "/0213A/admin/addcourse", icon: PlusCircle },
@@ -33,20 +42,94 @@ export default function AdminLayout({ children }: any) {
     { title: "Home", href: "/", icon: Home },
   ];
 
-  if (!mounted) return null; // Prevent SSR hydration errors
+  if (!mounted) return null;
 
   return (
-    <div className="min-h-screen flex bg-[#f8f9fb] text-gray-900 overflow-hidden ">
-      {/* Sidebar */}
-      <div className="relative z-50">
+    <div className="min-h-screen flex bg-[#f8f9fb] text-gray-900 overflow-hidden font-poppins">
+
+      {/* ------------------------------ */}
+      {/* MOBILE / TABLET TOP NAVBAR */}
+      {/* ------------------------------ */}
+      <div className="lg:hidden w-full fixed top-0 left-0 z-50 bg-white shadow-md border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+        <button onClick={() => setMobileOpen(true)}>
+          <Menu className="w-7 h-7 text-gray-700" />
+        </button>
+
+        <h2 className="text-lg font-bold tracking-widest">Admin Panel</h2>
+
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-3 py-1 bg-red-500 text-white rounded-lg text-sm"
+        >
+          <LogOut size={16} />
+        </button>
+      </div>
+
+      {/* --------------------------------------- */}
+      {/* MOBILE SIDEBAR (SLIDE-IN FROM LEFT) */}
+      {/* --------------------------------------- */}
+      <div
+        className={`lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity ${
+          mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      <aside
+        className={`lg:hidden fixed top-0 left-0 h-full bg-white w-64 shadow-xl z-60 p-5 border-r border-gray-200 transition-transform duration-300 ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-xl font-bold tracking-widest font-mono">Admin Panel</h1>
+          <button onClick={() => setMobileOpen(false)}>
+            <X size={22} />
+          </button>
+        </div>
+
+        <nav className="flex flex-col gap-3">
+          {navItems.map((item, idx) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={idx}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className="
+                flex items-center gap-3 p-3 rounded-xl 
+                transition-all bg-white hover:bg-gray-50
+                border border-gray-200 hover:border-gray-300
+                shadow-sm hover:shadow-md
+              "
+              >
+                <Icon className="w-5 h-5 text-blue-500" />
+                <span>{item.title}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Logout (mobile) */}
+        <button
+          onClick={handleLogout}
+          className="mt-6 flex items-center gap-2 w-full p-3 bg-red-500 text-white rounded-xl"
+        >
+          <LogOut size={18} /> Logout
+        </button>
+      </aside>
+
+      {/* ------------------------------ */}
+      {/* DESKTOP SIDEBAR */}
+      {/* ------------------------------ */}
+      <div className="hidden lg:block relative z-50">
         <aside
           className={`
-          ${open ? "w-64" : "w-20"}
-          transition-all duration-300
-          bg-white/70 backdrop-blur-xl border-r border-gray-200
-          shadow-[0_4px_20px_rgba(0,0,0,0.06)]
-          p-5 flex flex-col relative rounded-b-2xl
-        `}
+            ${open ? "w-64" : "w-20"}
+            transition-all duration-300
+            bg-white/70 backdrop-blur-xl border-r border-gray-200
+            shadow-[0_4px_20px_rgba(0,0,0,0.06)]
+            p-5 flex flex-col relative rounded-b-2xl
+          `}
         >
           {/* Toggle Button */}
           <button
@@ -57,14 +140,11 @@ export default function AdminLayout({ children }: any) {
           </button>
 
           {/* Title */}
-          <h1
-            className={`
-            text-2xl font-bold mb-6 transition-all duration-300
-            ${open ? "opacity-100" : "opacity-0 hidden"}
-          `}
-          >
-            Admin Panel
-          </h1>
+          {open && (
+            <h1 className="text-2xl font-bold mb-6 font-mono tracking-widest">
+              Admin Panel
+            </h1>
+          )}
 
           {/* Menu */}
           <nav className="flex flex-col gap-3 mt-4">
@@ -82,30 +162,42 @@ export default function AdminLayout({ children }: any) {
                 "
                 >
                   <Icon className="w-5 h-5 text-blue-500 group-hover:scale-110 transition" />
-                  <span className={`${open ? "opacity-100" : "opacity-0 hidden"} transition-all`}>
-                    {item.title}
-                  </span>
+                  {open && <span>{item.title}</span>}
                 </Link>
               );
             })}
           </nav>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="mt-6 flex items-center gap-2 p-3 bg-red-500 text-white rounded-xl"
+          >
+            <LogOut size={18} />
+            {open && "Logout"}
+          </button>
         </aside>
       </div>
-      {/* Main Content */}
+
+      {/* ------------------------------ */}
+      {/* MAIN CONTENT */}
+      {/* ------------------------------ */}
       <div className="min-h-screen w-full relative flex-1 z-20">
-        {/* Noise Texture (Darker Dots) Background */}
+        {/* Background */}
         <div
           className="absolute inset-0 z-0"
           style={{
             background: "#ffffff",
-            backgroundImage: "radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.35) 1px, transparent 0)",
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.35) 1px, transparent 0)",
             backgroundSize: "20px 20px",
           }}
         />
-        {/* Your Content/Components */}
-        <main className=" p-10 text-gray-900 z-50 relative ">{children}</main>
-      </div>
 
+        <main className="p-10 pt-20 lg:pt-10 text-gray-900 z-50 relative">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
