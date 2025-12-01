@@ -72,7 +72,7 @@ export default function AllCoursesAdmin() {
 
                     <div className="mt-4 flex justify-between">
                         <button
-                            onClick={() => router.push(`/admin/course/edit/${course._id}`)}
+                            onClick={() => router.push(`/0213A/admin/editcourse/${course._id}`)}
                             className="px-4 py-2 bg-gray-900 text-white rounded-lg"
                         >
                             Edit

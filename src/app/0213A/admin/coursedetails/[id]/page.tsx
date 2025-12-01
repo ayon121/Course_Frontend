@@ -80,7 +80,7 @@ export default function CourseDetailsAdmin() {
 
         <div className="flex gap-2">
           <button
-            onClick={() => router.push(`/admin/course/edit/${course._id}`)}
+            onClick={() => router.push(`/0213A/admin/editcourse/${course._id}`)}
             className="px-4 py-2 bg-gray-700 text-white rounded-lg"
           >
             Edit
