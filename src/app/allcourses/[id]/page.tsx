@@ -4,6 +4,7 @@
 import { getPublicCourseDetailsServer } from "@/actions/coursepublic/getCourseDetails";
 import { Lock } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -199,9 +200,11 @@ const CourseDetailsPublicpage = () => {
                         </div>
 
                         {/* Enroll Button */}
-                        <button className="w-full py-4 bg-gray-800 hover:bg-gray-600 text-white text-lg font-semibold rounded-xl transition">
-                            Enroll Now
-                        </button>
+                        <Link href={`/course/checkout/${course._id}`}>
+                            <button className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-lg font-semibold rounded-xl transition mb-6">
+                                Enroll Now
+                            </button>
+                        </Link>
 
                         {/* Instructor Card */}
                         <div className="border p-5 rounded-xl bg-gray-50 shadow-sm">
@@ -267,12 +270,13 @@ const CourseDetailsPublicpage = () => {
                         </div>
 
                         {/* Enroll Button */}
-                        <button
-                            className="px-6 py-3 bg-gray-700 
+                        <Link href={`/course/checkout/${course._id}`}><button
+                            className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 
                         text-white font-semibold rounded-xl shadow-lg hover:opacity-90 transition"
                         >
                             Enroll Now
                         </button>
+                        </Link>
                     </div>
                 )}
 
