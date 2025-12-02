@@ -38,24 +38,29 @@ export default function RegisterPage() {
         }
 
         const result = await registerUser(null, formData);
-
+        // If registerUser triggers redirect, this won't run.
+        // Only runs on validation error or other issues.
         if (result?.success === false) {
             toast.error(result.message);
+
         }
 
-        setLoading(false);
+        if (result?.success) {
+            toast.success("Registration successful! Welcome");
+            setLoading(false);
+        }
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 bg-gray-100 ">
             <div className="w-full max-w-md bg-white  shadow-xl p-8 rounded-2xl">
-                
+
                 <h2 className="text-2xl font-semibold text-center mb-6 text-black">
                     Create a New Account
                 </h2>
 
                 <form action={handleRegister} className="space-y-5">
-                    
+
                     {/* Name */}
                     <div>
                         <label className="text-black font-medium">Full Name</label>
@@ -96,16 +101,15 @@ export default function RegisterPage() {
                                 <div className="w-full h-2 bg-gray-300  rounded-full overflow-hidden">
                                     <div
                                         className={`h-full transition-all duration-300 
-                                            ${
-                                                getPasswordStrength() === 1
-                                                    ? "w-1/4 bg-red-500"
-                                                    : getPasswordStrength() === 2
+                                            ${getPasswordStrength() === 1
+                                                ? "w-1/4 bg-red-500"
+                                                : getPasswordStrength() === 2
                                                     ? "w-1/2 bg-yellow-500"
                                                     : getPasswordStrength() === 3
-                                                    ? "w-3/4 bg-blue-500"
-                                                    : getPasswordStrength() === 4
-                                                    ? "w-full bg-green-500"
-                                                    : "w-0"
+                                                        ? "w-3/4 bg-blue-500"
+                                                        : getPasswordStrength() === 4
+                                                            ? "w-full bg-green-500"
+                                                            : "w-0"
                                             }
                                         `}
                                     ></div>

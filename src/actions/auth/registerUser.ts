@@ -2,46 +2,52 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { zodValidator } from "@/zod/zodValidator";
-
+import { registerValidationZodSchema } from "@/zod/auth.validation";
 import { serverFetch } from "@/lib/serverFetch";
 import { setCookie } from "./tokenHandlers";
-import { registerValidationZodSchema } from "@/zod/auth.validation";
 
 
-export const registerUser = async (_: any, formData: FormData) => {
+
+export const registerUser = async (_prevState: any, formData: FormData) => {
     try {
+        // Extract payload
         const payload = {
             name: formData.get("name"),
             email: formData.get("email"),
             password: formData.get("password"),
         };
 
-        // Validate input using Zod
-        const validated = zodValidator(payload, registerValidationZodSchema);
-        if (!validated.success) return validated;
+        // Validate input data
+        const parsed = registerValidationZodSchema.safeParse(payload);
 
-        // Call backend API
-        const res = await serverFetch.post("/auth/register", {
-            body: JSON.stringify(validated.data),
-            headers: { "Content-Type": "application/json" },
-        });
-
-        const result = await res.json();
-
-        if (!res.ok) {
+        if (!parsed.success) {
             return {
                 success: false,
-                message: result.message || "Registration failed",
+                message: "Validation failed",
+                errors: parsed.error.flatten().fieldErrors,
             };
         }
 
-        // If backend returns tokens after registration
-        const accessToken = result.data?.accesstoken;
-        const refreshToken = result.data?.refreshtoken;
 
-        if (accessToken) {
-            await setCookie("accessToken", accessToken, {
+        const response = await fetch("http://localhost:5000/api/v1/user/register", {
+            method: "POST",
+            body: JSON.stringify(parsed.data),
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const result = await response.json();
+
+        if (result.success !== true) {
+            return {
+                success: false,
+                message: result.message || "Registration failed",
+                errors: result.error || null,
+            };
+        }
+
+        // 🔐 3) Set Auth Cookies (if backend returns tokens)
+        if (result?.data?.accesstoken) {
+            await setCookie("accessToken", result.data.accesstoken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
@@ -50,20 +56,21 @@ export const registerUser = async (_: any, formData: FormData) => {
             });
         }
 
-        if (refreshToken) {
-            await setCookie("refreshToken", refreshToken, {
+        if (result?.data?.refreshtoken) {
+            await setCookie("refreshToken", result.data.refreshtoken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
                 path: "/",
-                maxAge: 60 * 60 * 24 * 7,
+                maxAge: 60 * 60 * 24 * 7, // 7 days
             });
         }
 
-        // Redirect user after registration
-        redirect("/dashboard");
+        // 🎯 4) Redirect after registration success
+        redirect("/");
 
     } catch (error: any) {
+        // Next.js redirect throws NEXT_REDIRECT digest — rethrow it
         if (error?.digest?.startsWith("NEXT_REDIRECT")) throw error;
 
         return {
@@ -71,7 +78,7 @@ export const registerUser = async (_: any, formData: FormData) => {
             message:
                 process.env.NODE_ENV === "development"
                     ? error.message
-                    : "Unable to create account",
+                    : "Something went wrong while creating your account.",
         };
     }
 };

@@ -40,7 +40,7 @@ const PublicNavbar = () => {
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center gap-8">
                     <Link href="/" className="hover:text-indigo-600">Home</Link>
-                    <Link href="/courses" className="hover:text-indigo-600">All Courses</Link>
+                    <Link href="/allcourses" className="hover:text-indigo-600">All Courses</Link>
                     <Link href="/about" className="hover:text-indigo-600">About Us</Link>
 
                     {loggedIn && (
@@ -83,7 +83,7 @@ const PublicNavbar = () => {
                 <div className="md:hidden bg-white shadow-lg px-5 pb-5 space-y-4">
 
                     <Link href="/" className="block py-2 border-b" onClick={() => setOpen(false)}>Home</Link>
-                    <Link href="/courses" className="block py-2 border-b" onClick={() => setOpen(false)}>All Courses</Link>
+                    <Link href="/allcourses" className="block py-2 border-b" onClick={() => setOpen(false)}>All Courses</Link>
                     <Link href="/about" className="block py-2 border-b" onClick={() => setOpen(false)}>About Us</Link>
 
                     {loggedIn && (
