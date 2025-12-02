@@ -46,7 +46,6 @@ export default function AdminLayout({ children }: any) {
 
 
   const handleLogout = async () => {
-    console.log("logout");
     logoutUser();
   };
 

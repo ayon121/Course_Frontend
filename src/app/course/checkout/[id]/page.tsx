@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getPublicCourseDetailsServer } from "@/actions/coursepublic/getCourseDetails";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { getUserInfoServer } from "@/actions/auth/getUserInfo";
 import { UserInfo } from "@/actions/auth/user.interface";
 
@@ -106,7 +106,6 @@ export default function EnrollPage() {
                         </div>
                     </div>
 
-                    {/* PAYMENT METHOD */}
                     {/* PAYMENT METHOD */}
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
