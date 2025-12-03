@@ -35,6 +35,7 @@ export async function proxy(request: NextRequest) {
         try {
             const decoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as JwtPayload;
             if (typeof decoded !== "string") userRole = decoded.role;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             // Invalid token → logout
             await deleteCookie("accessToken");

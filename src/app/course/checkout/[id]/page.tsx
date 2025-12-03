@@ -5,10 +5,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getPublicCourseDetailsServer } from "@/actions/coursepublic/getCourseDetails";
 import { useParams } from "next/navigation";
-// import { toast } from "sonner";
 import { getUserInfoServer } from "@/actions/auth/getUserInfo";
 import { UserInfo } from "@/actions/auth/user.interface";
+import { createOrder } from "@/actions/course/createCourseOrder";
 
+// import { toast } from "sonner";
 
 export default function EnrollPage() {
     const params = useParams();
@@ -18,23 +19,19 @@ export default function EnrollPage() {
     const [loading, setLoading] = useState(true);
 
     const [terms, setTerms] = useState(false);
-    const [paymentMethod, setPaymentMethod] = useState("sslcommerz");
     const [user, setUser] = useState<UserInfo>();
-
-
-    
-
 
     useEffect(() => {
         const fetchUser = async () => {
-            const userInfo = await getUserInfoServer(); // call server function
+            const userInfo = await getUserInfoServer();
             setUser(userInfo);
         };
 
         fetchUser();
     }, []);
+
     useEffect(() => {
-        async function fetch() {
+        async function fetchCourse() {
             try {
                 const data = await getPublicCourseDetailsServer(courseId);
                 setCourse(data);
@@ -44,11 +41,27 @@ export default function EnrollPage() {
                 setLoading(false);
             }
         }
-        fetch();
+        fetchCourse();
     }, [courseId]);
 
     const handlePayment = async () => {
-        console.log("payment");
+        if (!terms) {
+            alert("Please accept the terms & conditions.");
+            return;
+        }
+
+        const res = await createOrder({
+            courseId,
+            paymentMethod: "SSLCOMMERCE",
+        });
+
+        if (!res.success) {
+            alert(res.message || "Payment initiation failed.");
+            return;
+        }
+
+        // Redirect to payment URL
+        window.location.href = res.paymentURL;
     };
 
     if (loading) return <p className="text-center py-20">Loading...</p>;
@@ -59,12 +72,10 @@ export default function EnrollPage() {
 
             <h1 className="text-3xl md:text-4xl font-bold mb-10">Checkout</h1>
 
-            {/* GRID LAYOUT */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
                 {/* LEFT: COURSE INFO */}
                 <div className="space-y-6 bg-white border rounded-2xl shadow-lg p-6 h-fit">
-
                     <h2 className="text-2xl font-semibold mb-4">Course Information</h2>
 
                     <Image
@@ -76,7 +87,6 @@ export default function EnrollPage() {
                     />
 
                     <h3 className="text-xl font-bold">{course.title}</h3>
-
                     <p className="text-gray-600">{course.description}</p>
 
                     <div>
@@ -96,13 +106,12 @@ export default function EnrollPage() {
                 {/* RIGHT: USER INFO + PAYMENT */}
                 <div className="space-y-6 bg-white border rounded-2xl shadow-xl p-6 h-fit">
 
-                    {/* USER INFO */}
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Your Information</h2>
 
                         <div className="space-y-2 text-gray-700">
-                            <p><strong>Name:</strong> {user?.name || 'User Name Not Found'}</p>
-                            <p><strong>Email:</strong> {user?.email || 'User Email Not Found'}</p>
+                            <p><strong>Name:</strong> {user?.name || "Name Not Found"}</p>
+                            <p><strong>Email:</strong> {user?.email || "Email Not Found"}</p>
                         </div>
                     </div>
 
@@ -111,24 +120,17 @@ export default function EnrollPage() {
                         <h2 className="text-xl font-semibold mb-4">Select Payment Method</h2>
 
                         <div
-                            onClick={() => setPaymentMethod("sslcommerz")}
-                            className={`border rounded-xl p-4 flex items-center gap-4 cursor-pointer transition shadow-sm hover:shadow-md
-            ${paymentMethod === "sslcommerz" ? "border-indigo-500 ring-2 ring-indigo-300" : "border-gray-300"}
-        `}
+                            className={`border rounded-xl p-4 flex items-center gap-4 transition shadow-sm hover:shadow-md border-indigo-500 ring-2 ring-indigo-300`}
                         >
-
                             <div>
                                 <p className="font-semibold text-gray-800">SSLCommerz</p>
-                                <p className="text-sm text-gray-500">Pay securely using Debit/Credit, bKash, Nagad & more</p>
+                                <p className="text-sm text-gray-500">
+                                    Pay with bKash, Nagad, Rocket, Visa, Mastercard
+                                </p>
                             </div>
-
-                            {/* Selected checkmark */}
-                            {paymentMethod === "sslcommerz" && (
-                                <span className="ml-auto text-indigo-600 font-bold text-lg">✔</span>
-                            )}
+                            <span className="ml-auto text-indigo-600 font-bold text-lg">✔</span>
                         </div>
                     </div>
-
 
                     {/* TERMS */}
                     <div className="flex items-center gap-3">
@@ -146,7 +148,7 @@ export default function EnrollPage() {
                         </p>
                     </div>
 
-                    {/* PROCEED BUTTON */}
+                    {/* PROCEED */}
                     <button
                         onClick={handlePayment}
                         className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 
