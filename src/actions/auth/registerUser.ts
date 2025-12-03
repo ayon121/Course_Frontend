@@ -3,7 +3,6 @@
 
 import { redirect } from "next/navigation";
 import { registerValidationZodSchema } from "@/zod/auth.validation";
-import { serverFetch } from "@/lib/serverFetch";
 import { setCookie } from "./tokenHandlers";
 
 
@@ -45,7 +44,7 @@ export const registerUser = async (_prevState: any, formData: FormData) => {
             };
         }
 
-        // 🔐 3) Set Auth Cookies (if backend returns tokens)
+        //  Set Auth Cookies (if backend returns tokens)
         if (result?.data?.accesstoken) {
             await setCookie("accessToken", result.data.accesstoken, {
                 httpOnly: true,
@@ -66,11 +65,11 @@ export const registerUser = async (_prevState: any, formData: FormData) => {
             });
         }
 
-        // 🎯 4) Redirect after registration success
-        redirect("/");
+        //  Redirect after registration success
+        redirect("/?accountCreated=true");
 
     } catch (error: any) {
-        // Next.js redirect throws NEXT_REDIRECT digest — rethrow it
+        // Allow NEXT_REDIRECT to escape
         if (error?.digest?.startsWith("NEXT_REDIRECT")) throw error;
 
         return {
