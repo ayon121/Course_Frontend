@@ -3,6 +3,7 @@
 
 import { PlayCircle, BookOpen } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function StudentDashboardClient({ purchasedCourse }: { purchasedCourse: any }) {
     return (
@@ -13,7 +14,7 @@ export default function StudentDashboardClient({ purchasedCourse }: { purchasedC
                     <h2 className="text-2xl font-bold">Continue Learning</h2>
 
                     <div className="bg-white  rounded-xl shadow-md border border-gray-200  overflow-hidden">
-                        
+
                         <div className="flex flex-col md:flex-row md:items-center gap-6 p-6">
 
                             {/* Thumbnail */}
@@ -51,10 +52,11 @@ export default function StudentDashboardClient({ purchasedCourse }: { purchasedC
                             </div>
 
                             {/* Continue Button */}
-                            <button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition shadow-md">
+                            <Link href={`/dashboard/viewcourse/${purchasedCourse.courseId._id}`}><button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition shadow-md">
                                 <PlayCircle className="w-5 h-5" />
                                 Continue
                             </button>
+                            </Link>
 
                         </div>
                     </div>
