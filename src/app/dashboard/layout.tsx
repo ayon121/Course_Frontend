@@ -206,7 +206,7 @@ export default function StudentLayout({ children }: any) {
                     }}
                 />
 
-                <main className="p-10 pt-20 lg:pt-10 text-gray-900 z-50 relative">
+                <main className=" p-3  md:p-10 pt-20 lg:pt-10 text-gray-900 z-50 relative">
                     {children}
                 </main>
             </div>
