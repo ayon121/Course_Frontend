@@ -3,8 +3,8 @@
 
 import { useEffect, useState } from "react";
 import { PlayCircle, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
-import Image from "next/image";
 import { getMySinglePurchasedCourse } from "@/actions/user/getMySinglePurchasedCourse";
+import { updateLastViewedModule } from "@/actions/user/updateLastViewedModule";
 
 interface PurchasedCourseClientProps {
     courseId: string;
@@ -27,10 +27,12 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
         }
     };
 
-    // DEMO: Update last viewed module
-    const handleModuleView = (moduleId: string) => {
-        console.log("👉 Updating last viewed module:", moduleId);
-        // Later: call backend API here
+    //  Update last viewed module
+    const handleModuleView = async (moduleId: string) => {
+        console.log("👉 Called updateLastViewedModule:", moduleId);
+
+        const res = await updateLastViewedModule(courseId, moduleId);
+        console.log("Server Response:", res);
     };
 
     // DEMO: Mark module as completed
@@ -69,6 +71,7 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
         };
 
         fetchCourse();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId]);
 
     if (loading) return <p className="text-center py-10">Loading course...</p>;
@@ -77,9 +80,13 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
 
     const currentModule = courseData.modules[currentIndex];
 
-    // Handle Module Change
-    const changeModule = (newIndex: number) => {
+
+
+    // Handle switching modules
+    const changeModule = async (newIndex: number) => {
         setCurrentIndex(newIndex);
+
+        // ⭐ Call server action on module switch
         handleModuleView(courseData.modules[newIndex]._id);
     };
 
@@ -144,7 +151,7 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
             {/* Module List */}
             <section>
                 <h2 className="text-2xl font-semibold mb-3">Course Modules</h2>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-[500px] overflow-y-scroll px-2.5 py-4 border border-gray-200 rounded-xl">
                     {courseData.modules.map((mod: any, idx: number) => {
                         const isActive = idx === currentIndex;
                         const isCompleted = courseData.completedModules.includes(mod._id);
@@ -154,10 +161,10 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
                                 key={mod._id}
                                 onClick={() => changeModule(idx)}
                                 className={`cursor-pointer flex justify-between items-center p-4 border rounded-xl transition ${isActive
-                                        ? "bg-blue-50 border-blue-400 shadow"
-                                        : isCompleted
-                                            ? "bg-green-50 border-green-400"
-                                            : "bg-white "
+                                    ? "bg-blue-50 border-blue-400 shadow"
+                                    : isCompleted
+                                        ? "bg-green-50 border-green-400"
+                                        : "bg-white "
                                     }`}
                             >
                                 <h3 className="font-semibold">

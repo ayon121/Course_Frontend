@@ -72,7 +72,7 @@ export const loginUser = async (_: any, formData: any): Promise<any> => {
         const defaultDashboard =
             role === "SUPER_ADMIN"
                 ? "/0213A/admin"
-                : "/dashboard";
+                : "/";
 
         redirect(redirectTo ? `${redirectTo}?loggedIn=true` : `${defaultDashboard}?loggedIn=true`);
         // redirect(`${redirectTo}?loggedIn=true` );
