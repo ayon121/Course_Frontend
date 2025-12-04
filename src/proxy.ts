@@ -10,6 +10,7 @@ import { getUserInfoServer } from "./actions/auth/getUserInfo";
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+
     // Allow static files & public routes
     if (
         pathname.startsWith("/_next/") ||
@@ -35,7 +36,7 @@ export async function proxy(request: NextRequest) {
         try {
             const decoded = jwt.verify(accessToken, process.env.JWT_SECRET!) as JwtPayload;
             if (typeof decoded !== "string") userRole = decoded.role;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             // Invalid token → logout
             await deleteCookie("accessToken");
@@ -62,7 +63,10 @@ export async function proxy(request: NextRequest) {
     for (const route in protectedRoutes) {
         if (pathname.startsWith(route)) {
             if (!accessToken) {
-                return NextResponse.redirect(new URL("/login", request.url));
+                const loginUrl = new URL("/login", request.url);
+                loginUrl.searchParams.set("redirect", pathname);
+                return NextResponse.redirect(loginUrl);
+                // return NextResponse.redirect(new URL("/login", request.url));
             }
 
             if (!protectedRoutes[route].includes(userRole!)) {

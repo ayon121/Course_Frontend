@@ -75,6 +75,7 @@ export const loginUser = async (_: any, formData: any): Promise<any> => {
                 : "/dashboard";
 
         redirect(redirectTo ? `${redirectTo}?loggedIn=true` : `${defaultDashboard}?loggedIn=true`);
+        // redirect(`${redirectTo}?loggedIn=true` );
 
     } catch (error: any) {
         if (error?.digest?.startsWith("NEXT_REDIRECT")) throw error;
