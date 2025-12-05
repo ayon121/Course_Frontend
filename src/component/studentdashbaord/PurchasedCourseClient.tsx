@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { PlayCircle, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { getMySinglePurchasedCourse } from "@/actions/user/getMySinglePurchasedCourse";
 import { updateLastViewedModule } from "@/actions/user/updateLastViewedModule";
+import { completeModule } from "@/actions/user/completeModule";
 
 interface PurchasedCourseClientProps {
     courseId: string;
@@ -29,16 +30,22 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
 
     //  Update last viewed module
     const handleModuleView = async (moduleId: string) => {
-        console.log("👉 Called updateLastViewedModule:", moduleId);
-
-        const res = await updateLastViewedModule(courseId, moduleId);
-        console.log("Server Response:", res);
+        await updateLastViewedModule(courseId, moduleId);
     };
 
-    // DEMO: Mark module as completed
-    const handleModuleComplete = (moduleId: string) => {
+    //Mark module as completed
+    const handleModuleComplete = async (moduleId: string) => {
         console.log("✅ Marking module as completed:", moduleId);
-        // Later: call backend API here
+
+        const res = await completeModule(courseId, moduleId);
+        console.log("complete res", res);
+
+        if (res.success) {
+            setCourseData((prev: any) => ({
+                ...prev,
+                completedModules: [...prev.completedModules, moduleId]
+            }));
+        }
     };
 
     useEffect(() => {
@@ -71,7 +78,7 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
         };
 
         fetchCourse();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [courseId]);
 
     if (loading) return <p className="text-center py-10">Loading course...</p>;
@@ -85,8 +92,7 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
     // Handle switching modules
     const changeModule = async (newIndex: number) => {
         setCurrentIndex(newIndex);
-
-        // ⭐ Call server action on module switch
+        //Call server action on module switch
         handleModuleView(courseData.modules[newIndex]._id);
     };
 
@@ -119,14 +125,27 @@ export default function PurchasedCourseClient({ courseId }: PurchasedCourseClien
                 ></iframe>
             </section>
 
+
             {/* Mark Completed Button */}
             <div className="flex justify-end">
-                <button
-                    onClick={() => handleModuleComplete(currentModule._id)}
-                    className="flex items-center gap-2 px-5 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
-                >
-                    <CheckCircle className="w-5 h-5" /> Mark as Completed
-                </button>
+                {courseData.completedModules.includes(currentModule._id) ? (
+                    <button
+                        disabled
+                        className="flex items-center gap-2 px-5 py-2 rounded-lg 
+                       bg-green-100 text-green-700 border border-green-400 
+                       cursor-not-allowed"
+                    >
+                        <CheckCircle className="w-5 h-5" /> Completed
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => handleModuleComplete(currentModule._id)}
+                        className="flex items-center gap-2 px-5 py-2 rounded-lg 
+                       bg-green-600 text-white hover:bg-green-700"
+                    >
+                        <CheckCircle className="w-5 h-5" /> Mark as Completed
+                    </button>
+                )}
             </div>
 
             {/* Prev/Next Buttons */}
