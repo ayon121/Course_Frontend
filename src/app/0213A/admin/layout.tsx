@@ -13,6 +13,8 @@ import {
   ImageIcon,
   Home,
   LogOut,
+  Clock10
+  
 } from "lucide-react";
 
 import { logoutUser } from "@/actions/auth/logoutUser";
@@ -52,7 +54,8 @@ export default function AdminLayout({ children }: any) {
   const navItems = [
     { title: "Add Course", href: "/0213A/admin/addcourse", icon: PlusCircle },
     { title: "All Courses", href: "/0213A/admin/allcourse", icon: BookOpen },
-    { title: "Manage Events", href: "/0213A/admin/manageevent", icon: CalendarCheck },
+    { title: "Add Events", href: "/0213A/admin/addevent", icon:  Clock10},
+    { title: "Ma Events", href: "/0213A/admin/manageevent", icon: CalendarCheck },
     { title: "Manage Users", href: "/0213A/admin/manageusers", icon: Users },
     { title: "Update Banner", href: "/0213A/admin/updatebanner", icon: ImageIcon },
     { title: "Home", href: "/", icon: Home },

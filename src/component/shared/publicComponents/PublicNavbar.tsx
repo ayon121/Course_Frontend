@@ -41,6 +41,7 @@ const PublicNavbar = () => {
                 <div className="hidden md:flex items-center gap-8">
                     <Link href="/" className="hover:text-gray-900">Home</Link>
                     <Link href="/allcourses" className="hover:text-gray-900">All Courses</Link>
+                    <Link href="/allevents" className="hover:text-gray-900">All Events</Link>
                     <Link href="/about" className="hover:text-gray-900">About Us</Link>
 
                     {loggedIn && (
@@ -84,6 +85,7 @@ const PublicNavbar = () => {
 
                     <Link href="/" className="block py-2 border-b" onClick={() => setOpen(false)}>Home</Link>
                     <Link href="/allcourses" className="block py-2 border-b" onClick={() => setOpen(false)}>All Courses</Link>
+                    <Link href="/allevents" className="block py-2 border-b" onClick={() => setOpen(false)}>All Events</Link>
                     <Link href="/about" className="block py-2 border-b" onClick={() => setOpen(false)}>About Us</Link>
 
                     {loggedIn && (
