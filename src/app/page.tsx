@@ -1,3 +1,4 @@
+import BannerSlider from "@/component/home/banner/BannerSlider";
 import PublicNavbar from "@/component/shared/publicComponents/PublicNavbar";
 
 export default function Home() {
@@ -6,10 +7,7 @@ export default function Home() {
       {/* Navbar */}
       <PublicNavbar />
 
-      {/* Banner section */}
-      <section className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center max-w-7xl mx-auto px-4 py-6">
-        <h1 className="text-3xl font-semibold text-gray-700">Banner Section</h1>
-      </section>
+      <BannerSlider></BannerSlider>
 
       {/* Instructor section */}
       <section className="w-full h-64 rounded-lg flex gap-4 max-w-7xl mx-auto px-4 py-6">

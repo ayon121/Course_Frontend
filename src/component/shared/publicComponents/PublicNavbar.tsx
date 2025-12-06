@@ -39,14 +39,14 @@ const PublicNavbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center gap-8">
-                    <Link href="/" className="hover:text-indigo-600">Home</Link>
-                    <Link href="/allcourses" className="hover:text-indigo-600">All Courses</Link>
-                    <Link href="/about" className="hover:text-indigo-600">About Us</Link>
+                    <Link href="/" className="hover:text-gray-900">Home</Link>
+                    <Link href="/allcourses" className="hover:text-gray-900">All Courses</Link>
+                    <Link href="/about" className="hover:text-gray-900">About Us</Link>
 
                     {loggedIn && (
                         <Link
                             href="/dashboard"
-                            className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 transition"
+                            className="px-4 py-2 rounded-lg bg-gray-900 text-white hover:bg-green-950 transition"
                         >
                             Dashboard
                         </Link>
@@ -89,7 +89,7 @@ const PublicNavbar = () => {
                     {loggedIn && (
                         <Link
                             href="/dashboard"
-                            className="block py-2 border-b text-indigo-600 font-medium"
+                            className="block py-2 border-b text-gray-900 font-medium"
                             onClick={() => setOpen(false)}
                         >
                             Dashboard
@@ -99,7 +99,7 @@ const PublicNavbar = () => {
                     {!loggedIn ? (
                         <Link
                             href="/login"
-                            className="block py-2 text-indigo-600 font-medium"
+                            className="block py-2 text-gray-900 font-medium"
                             onClick={() => setOpen(false)}
                         >
                             Login

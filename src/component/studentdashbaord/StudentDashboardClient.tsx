@@ -54,7 +54,7 @@ export default function StudentDashboardClient({ purchasedCourse }: { purchasedC
                             {/* Continue Button */}
                             <Link href={`/dashboard/viewcourse/${purchasedCourse.courseId._id}`}><button className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition shadow-md">
                                 <PlayCircle className="w-5 h-5" />
-                                Continue
+                                Watch
                             </button>
                             </Link>
 
